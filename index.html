@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ইকরা মাদ্রাসা - আইডি কার্ড জেনারেটর</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Tiro+Bangla:ital@0;1&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --card-width-in: 2.127;
+            --card-height-in: 3.387;
+            --print-dpi: 300;
+            --primary-green: #004d40; /* আরও গাঢ় প্রফেশনাল সবুজ */
+            --gold-color: #C5A059; /* প্রিমিয়াম গোল্ড কালার */
+            --cream-bg: #FCFBF5; /* ব্যাকগ্রাউন্ডের জন্য হালকা ক্রিম কালার */
+        }
+
+        body {
+            font-family: 'Tiro Bangla', serif;
+            background-color: #eef2f3;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            justify-content: center;
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        .controls {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            width: 100%;
+            max-width: 400px;
+            border-top: 5px solid var(--primary-green);
+        }
+
+        .controls h2 {
+            color: var(--primary-green);
+            margin-top: 0;
+            text-align: center;
+            border-bottom: 2px dashed #ddd;
+            padding-bottom: 15px;
+            font-size: 24px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            color: #444;
+            font-size: 14px;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-family: 'Tiro Bangla', serif;
+            font-size: 16px;
+            box-sizing: border-box;
+            transition: border-color 0.3s;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary-green);
+        }
+
+        button#downloadBtn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(45deg, var(--primary-green), #00695c);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 18px;
+            font-family: 'Tiro Bangla', serif;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 15px;
+            box-shadow: 0 4px 10px rgba(0,77,64,0.3);
+        }
+
+        button#downloadBtn:hover, button#downloadBtnBack:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0,77,64,0.4);
+        }
+
+        button#downloadBtnBack {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(45deg, var(--gold-color), #B8860B);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 18px;
+            font-family: 'Tiro Bangla', serif;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 15px;
+            box-shadow: 0 4px 10px rgba(197,160,89,0.3);
+        }
+
+        .preview-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: #dcdcdc;
+            border-radius: 12px;
+            width: 100%;
+        }
+
+        .canvas-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 25px;
+            justify-content: center;
+            width: 100%;
+        }
+
+        canvas {
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            border-radius: 10px;
+            background: white;
+            max-width: 100%;
+            height: auto;
+            cursor: move;
+            touch-action: none;
+        }
+
+        .helper-text {
+            margin-top: 15px;
+            color: #555;
+            font-size: 14px;
+            background: rgba(255,255,255,0.8);
+            padding: 5px 10px;
+            border-radius: 20px;
+        }
+
+        .developer-info {
+            margin-top: 25px;
+            color: #444;
+            font-size: 15px;
+            text-align: center;
+            background: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            border-bottom: 3px solid var(--primary-green);
+            line-height: 1.6;
+        }
+
+        .developer-info strong {
+            color: var(--primary-green);
+        }
+
+        .developer-info .contact-link {
+            color: #25D366; /* WhatsApp Green */
+            text-decoration: none;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="controls">
+            <h2>তথ্য পূরণ করুন</h2>
+            
+            <div class="form-group">
+                <label>ছাত্রের ছবি আপলোড করুন</label>
+                <input type="file" id="studentPhoto" accept="image/*" onchange="loadImage(event)">
+            </div>
+
+            <div class="form-group">
+                <label>ছবির সাইজ (জুম করুন)</label>
+                <input type="range" id="zoomSlider" min="0.5" max="3" step="0.1" value="1" oninput="updateZoom(this.value)" style="width: 100%;">
+            </div>
+
+            <div class="form-group">
+                <label>শিক্ষার্থীর নাম</label>
+                <input type="text" id="name" placeholder="নাম লিখুন" value="মোঃ আব্দুল্লাহ" oninput="drawCard()">
+            </div>
+
+            <div class="form-group">
+                <label>রোল নং</label>
+                <input type="text" id="idNo" placeholder="রোল নং লিখুন" value="" oninput="drawCard()">
+            </div>
+
+            <div class="form-group">
+                <label>শ্রেণি</label>
+                <input type="text" id="stdClass" list="classList" placeholder="শ্রেণি নির্বাচন করুন বা লিখুন" value="" oninput="drawCard()">
+                <datalist id="classList">
+                    <option value="১ম"></option>
+                    <option value="২য়"></option>
+                    <option value="৩য়"></option>
+                    <option value="৪র্থ"></option>
+                    <option value="৫ম"></option>
+                </datalist>
+            </div>
+
+            <div class="form-group">
+                <label>বিভাগ</label>
+                <input type="text" id="class" list="sectionList" placeholder="বিভাগ নির্বাচন করুন বা লিখুন" value="" oninput="drawCard()">
+                <datalist id="sectionList">
+                    <option value="নাজেরা"></option>
+                    <option value="নূরানী"></option>
+                    <option value="হিফজ"></option>
+                    <option value="মহিলা হিফজ"></option>
+                </datalist>
+            </div>
+
+            <div class="form-group">
+                <label>পিতার নাম</label>
+                <input type="text" id="fatherName" placeholder="পিতার নাম" value="মোঃ আব্দুর রহমান" oninput="drawCard()">
+            </div>
+            
+            <div class="form-group">
+                <label>রক্তের গ্রুপ</label>
+                <select id="bloodGroup" onchange="drawCard()">
+                    <option value="A+">A+</option>
+                    <option value="A-">A-</option>
+                    <option value="B+">B+</option>
+                    <option value="B-">B-</option>
+                    <option value="AB+">AB+</option>
+                    <option value="AB-">AB-</option>
+                    <option value="O+">O+</option>
+                    <option value="O-">O-</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>মোবাইল নাম্বার</label>
+                <input type="text" id="mobile" placeholder="০১৭XXXXXXXX" value="০১৭৩২-৭০০৮৮৫" oninput="drawCard()">
+            </div>
+
+            <div class="form-group">
+                <label>ঠিকানা</label>
+                <input type="text" id="address" placeholder="ঠিকানা লিখুন" value="বেগমপুর, ঝিনাইদহ" oninput="drawCard()">
+            </div>
+
+            <div class="form-group">
+                <label>কার্ডের থিম কালার</label>
+                <input type="color" id="themeColor" value="#006A4E" oninput="drawCard()">
+            </div>
+
+            <button id="downloadBtn" onclick="downloadCard()">সামনের অংশ ডাউনলোড করুন</button>
+            <button id="downloadBtnBack" onclick="downloadBackCard()">পিছনের অংশ ডাউনলোড করুন</button>
+        </div>
+
+        <div class="preview-area">
+            <div class="canvas-container">
+                <div style="text-align: center;">
+                    <h3 style="color: var(--primary-green); margin-bottom: 10px;">সামনের অংশ</h3>
+                    <canvas id="cardCanvas"></canvas>
+                </div>
+                <div style="text-align: center;">
+                    <h3 style="color: var(--primary-green); margin-bottom: 10px;">পিছনের অংশ</h3>
+                    <canvas id="cardBackCanvas"></canvas>
+                </div>
+            </div>
+            <p class="helper-text">* ডাউনলোড করার পর রেজোলিউশন হাই থাকবে</p>
+            
+            <div class="developer-info">
+                Iqra Madrasha Id Card Maker | App Created By <strong>Najmul Bin Jalal Uddin</strong> <br>
+                Contact: 
+                <a href="https://wa.me/8801966649491" target="_blank" class="contact-link">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c-.003 1.396.366 2.76 1.057 3.965L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.521a6.6 6.6 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.56 6.56 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592m3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.73.73 0 0 0-.529.247c-.182.198-.691.677-.691 1.654s.71 1.916.81 2.049c.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232z"/>
+                    </svg>
+                    01966649491
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // কনফিগারেশন
+        const canvas = document.getElementById('cardCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        const canvasBack = document.getElementById('cardBackCanvas');
+        const ctxBack = canvasBack.getContext('2d');
+
+        // --- নতুন কোড শুরু: ছবি মুভ এবং জুম করার ভেরিয়েবল ---
+        let imgOffsetX = 0;
+        let imgOffsetY = 0;
+        let imgScale = 1; // ডিফল্ট জুম লেভেল ১
+        let isDragging = false;
+        let startX, startY;
+
+        // জুম আপডেট ফাংশন
+        function updateZoom(val) {
+            imgScale = val;
+            drawCard();
+        }
+
+        // মাউস ইভেন্ট লিসেনার (ড্র্যাগ করার জন্য)
+        canvas.addEventListener('mousedown', startDrag);
+        canvas.addEventListener('mousemove', drag);
+        canvas.addEventListener('mouseup', endDrag);
+        canvas.addEventListener('mouseout', endDrag);
+        
+        // টাচ ইভেন্ট (মোবাইলের জন্য)
+        canvas.addEventListener('touchstart', (e) => startDrag(e.touches[0]));
+        canvas.addEventListener('touchmove', (e) => {
+             e.preventDefault(); // স্ক্রল বন্ধ করা
+             drag(e.touches[0]);
+        });
+        canvas.addEventListener('touchend', endDrag);
+
+        function startDrag(e) {
+            isDragging = true;
+            // ক্যানভাস স্ক্রিনে কতটুকু দেখাচ্ছে আর আসলে কত বড়, তার অনুপাত বের করা
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+
+            startX = e.clientX * scaleX - imgOffsetX;
+            startY = e.clientY * scaleY - imgOffsetY;
+        }
+
+        function drag(e) {
+            if (!isDragging) return;
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+
+            imgOffsetX = e.clientX * scaleX - startX;
+            imgOffsetY = e.clientY * scaleY - startY;
+            drawCard(); // প্রতি মুভমেন্টে কার্ড রিফ্রেশ হবে
+        }
+
+        function endDrag() {
+            isDragging = false;
+        }
+        // ইঞ্চিকে পিক্সেল এ কনভার্ট করা (300 DPI তে)
+        const dpi = 300;
+        const widthInch = 2.127;
+        const heightInch = 3.387;
+        
+        const canvasWidth = widthInch * dpi;  // ~638 px
+        const canvasHeight = heightInch * dpi; // ~1016 px
+
+        // ক্যানভাস সাইজ সেট করা
+        canvas.width = canvasWidth;
+        canvas.height = canvasHeight;
+        
+        canvasBack.width = canvasWidth;
+        canvasBack.height = canvasHeight;
+        
+        // স্ক্রিনে দেখার সুবিধার্থে স্টাইল দিয়ে ছোট দেখানো
+        canvas.style.width = "320px"; // প্রিভিউ সাইজ
+        canvas.style.height = "auto";
+        
+        canvasBack.style.width = "320px";
+        canvasBack.style.height = "auto";
+
+        // ইমেজ সোর্স লোড করা
+        const calligraphyImg = new Image();
+        calligraphyImg.src = 'calligraphy.png'; 
+        
+        const logoImg = new Image();
+        logoImg.src = 'logo.png'; 
+
+        // নতুন: স্বাক্ষরের ছবি
+        const signImg = new Image();
+        signImg.src = 'signature.png'; // এখানে আপনার স্বাক্ষরের ফাইলের নাম থাকবে
+
+        const placeholderUser = new Image();
+        placeholderUser.src = 'https://via.placeholder.com/300x350?text=Photo'; 
+
+        let userUploadedImg = null;
+
+        // সব ইমেজ লোড হলে কার্ড আঁকা শুরু হবে
+        let imagesLoaded = 0;
+        const totalImages = 3; // calligraphy + logo + signature (সংখ্যা ২ থেকে ৩ করা হয়েছে)
+
+        function checkImagesLoaded() {
+            imagesLoaded++;
+            if (imagesLoaded === totalImages) {
+                drawCard();
+                drawBackCard();
+            }
+        }
+
+        calligraphyImg.onload = checkImagesLoaded;
+        logoImg.onload = checkImagesLoaded;
+        signImg.onload = checkImagesLoaded; // স্বাক্ষরের লোডার যোগ করা হলো
+
+        // ছাত্রের ছবি লোড করার ফাংশন
+        function loadImage(event) {
+            const reader = new FileReader();
+            reader.onload = function(){
+                userUploadedImg = new Image();
+                userUploadedImg.onload = function() {
+                    // নতুন ছবি নিলে পজিশন এবং জুম রিসেট হবে
+                    imgOffsetX = 0;
+                    imgOffsetY = 0;
+                    imgScale = 1; 
+                    document.getElementById('zoomSlider').value = 1; // স্লাইডার রিসেট
+                    drawCard();
+                }
+                userUploadedImg.src = reader.result;
+            }
+            if(event.target.files[0]){
+                reader.readAsDataURL(event.target.files[0]);
+            }
+        }
+
+       // কার্ড ড্রয়িং ফাংশন (মেইন লজিক - আপডেট করা ডিজাইন)
+        function drawCard() {
+            const width = canvas.width;
+            const height = canvas.height;
+
+            // ১. ব্যাকগ্রাউন্ড ক্লিয়ার ও বেস কালার (ক্রিম কালার)
+            ctx.clearRect(0, 0, width, height);
+            ctx.fillStyle = "#FCFBF5"; // হালকা ক্রিম ব্যাকগ্রাউন্ড
+            ctx.fillRect(0, 0, width, height);
+
+            // ২. ডিজাইন ভেরিয়েবল
+            const primaryGreen = "#004d40"; // গাঢ় সবুজ
+            const secondaryGreen = "#00695c"; // একটু হালকা সবুজ
+            const goldColor = "#C5A059"; // গোল্ডেন
+            const themeColor = document.getElementById('themeColor').value; // ইউজার ইনপুট (যদি লাগে)
+
+            // --- হেডার ডিজাইন (আধুনিক জ্যামিতিক শেপ) ---
+            
+            // টপ গ্রিন ব্যাকগ্রাউন্ড (কার্ভ ছাড়া, মডার্ন স্ল্যান্ট)
+            ctx.beginPath();
+            ctx.moveTo(0, 0);
+            ctx.lineTo(width, 0);
+            ctx.lineTo(width, 380); // ডানদিকে একটু বেশি নামানো
+            ctx.lineTo(0, 320);     // বামদিকে একটু উপরে
+            ctx.closePath();
+            
+            // হেডারে গ্রিন গ্রেডিয়েন্ট
+            const headerGrad = ctx.createLinearGradient(0, 0, 0, 400);
+            headerGrad.addColorStop(0, primaryGreen);
+            headerGrad.addColorStop(1, secondaryGreen);
+            ctx.fillStyle = headerGrad;
+            ctx.fill();
+
+            // গোল্ডেন বর্ডার লাইন (হেডারের নিচে)
+            ctx.beginPath();
+            ctx.moveTo(0, 320);
+            ctx.lineTo(width, 380);
+            ctx.lineTo(width, 395);
+            ctx.lineTo(0, 335);
+            ctx.closePath();
+            ctx.fillStyle = goldColor;
+            ctx.fill();
+
+            // জ্যামিতিক অলঙ্করণ (কোণায় ডিজাইন - রেফারেন্স ইমেজের মতো ভাব আনার জন্য)
+            ctx.save();
+            ctx.globalAlpha = 0.1; // হালকা জলছাপ
+            ctx.fillStyle = "#FFD700";
+            // বাম দিকে কিছু ডায়মন্ড শেপ
+            for(let i=0; i<5; i++) {
+                ctx.beginPath();
+                ctx.moveTo(0, 100 + (i*60));
+                ctx.lineTo(50, 150 + (i*60));
+                ctx.lineTo(0, 200 + (i*60));
+                ctx.fill();
+            }
+            // ডান দিকে কিছু ডায়মন্ড শেপ
+            for(let i=0; i<5; i++) {
+                ctx.beginPath();
+                ctx.moveTo(width, 100 + (i*60));
+                ctx.lineTo(width-50, 150 + (i*60));
+                ctx.lineTo(width, 200 + (i*60));
+                ctx.fill();
+            }
+            ctx.restore();
+
+            // ৩. লোগো এবং ক্যালিগ্রাফি প্লেসমেন্ট
+            
+            // --- ক্যালিগ্রাফি গোল্ডেন কালার করার লজিক ---
+            const calliW = width - 80; 
+            const calliH = 100;
+            
+            // একটি টেম্পোরারি ক্যানভাস তৈরি করে কালার চেঞ্জ করা হচ্ছে
+            const tempCanvas = document.createElement('canvas');
+            tempCanvas.width = calliW;
+            tempCanvas.height = calliH;
+            const tempCtx = tempCanvas.getContext('2d');
+
+            // টেম্পোরারি ক্যানভাসে ইমেজ আঁকা
+            tempCtx.drawImage(calligraphyImg, 0, 0, calliW, calliH);
+            // গোল্ডেন কালার অ্যাপ্লাই করা (সোর্স-ইন মেথড)
+            tempCtx.globalCompositeOperation = "source-in";
+            tempCtx.fillStyle = goldColor; 
+            tempCtx.fillRect(0, 0, calliW, calliH);
+
+            // এখন মেইন ক্যানভাসে রঙিন ক্যালিগ্রাফি বসানো (সাথে শ্যাডো যোগ করা হয়েছে)
+            ctx.save();
+            ctx.shadowColor = "rgba(0, 0, 0, 0.4)"; // শ্যাডোর কালার
+            ctx.shadowBlur = 10; // কতটা ঘোলা হবে
+            ctx.shadowOffsetX = 5; // ডান দিকে কতটা সরবে
+            ctx.shadowOffsetY = 5; // নিচে কতটা সরবে
+            ctx.drawImage(tempCanvas, 40, 30);
+            ctx.restore();
+
+
+            // --- লোগো (মাঝখানে) এবং শ্যাডো ---
+            const logoSize = 200;
+            const logoX = (width - logoSize) / 2;
+            const logoY = 135;
+            
+            ctx.save(); // সেটিংস সেভ রাখা
+            // সুন্দর শ্যাডো ইফেক্ট
+            ctx.shadowColor = "rgba(0, 0, 0, 0.35)"; // কালো হালকা ছায়া
+            ctx.shadowBlur = 20; // কতটা ছড়িয়ে পড়বে
+            ctx.shadowOffsetX = 0; // ডানে বা বামে (0 মানে মাঝখানে)
+            ctx.shadowOffsetY = 10; // একটু নিচের দিকে শ্যাডো পড়বে
+            
+            ctx.drawImage(logoImg, logoX, logoY, logoSize, logoSize);
+            ctx.restore(); // সেটিংস রিসেট (যাতে পরের লেখায় শ্যাডো না পড়ে)
+
+            // ৪. টাইটেল টেক্সট (ইকরা মাদরাসা - গোল্ডেন কালার)
+            ctx.save();
+            ctx.textAlign = "center";
+            
+            // গোল্ডেন টেক্সট ইফেক্ট
+            const textGrad = ctx.createLinearGradient(0, 420, width, 420);
+            textGrad.addColorStop(0.3, "#B8860B");
+            textGrad.addColorStop(0.5, "#FFD700");
+            textGrad.addColorStop(0.7, "#B8860B");
+            
+            ctx.fillStyle = textGrad;
+            // টেক্সট শ্যাডো
+            ctx.shadowColor = "rgba(0,0,0,0.3)";
+            ctx.shadowBlur = 4;
+            ctx.shadowOffsetX = 2;
+            ctx.shadowOffsetY = 2;
+            
+            ctx.font = "bold 65px 'Tiro Bangla'";
+            ctx.fillText("বেগমপুর ইকরা মাদরাসা", width / 2, 460);
+            ctx.restore();
+
+            // সাব-টাইটেল (ছাত্র পরিচয়পত্র)
+            ctx.fillStyle = "#000";
+            ctx.font = "bold 35px 'Tiro Bangla'";
+            ctx.textAlign = "center";
+            // নিচে একটি লাইন
+            const subTitleY = 510;
+            ctx.fillText("পরিচয়পত্র", width / 2, subTitleY);
+            
+            // সাব-টাইটেলের নিচে দাগ
+            ctx.beginPath();
+            ctx.moveTo(width/2 - 100, subTitleY + 10);
+            ctx.lineTo(width/2 + 100, subTitleY + 10);
+            ctx.strokeStyle = "#000";
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            // ৫. ছাত্রের ছবি (বর্গাকার ফ্রেম - রেফারেন্স ইমেজের মতো)
+            const photoW = 200;
+            const photoH = 240; // পাসপোর্ট সাইজ অনুপাত
+            const photoX = 10;  // বাম দিকে
+            const photoY = 550;
+
+            ctx.save();
+            // ছবির বর্ডার (গোল্ডেন)
+            ctx.lineWidth = 8;
+            ctx.strokeStyle = goldColor;
+            ctx.strokeRect(photoX, photoY, photoW, photoH);
+            
+            // ক্লিপিং এরিয়া (ছবির জন্য)
+            ctx.beginPath();
+            ctx.rect(photoX, photoY, photoW, photoH);
+            ctx.clip();
+
+            // ছবি ড্র করা
+            if (userUploadedImg) {
+                const baseSize = 300; 
+                const imgDrawW = baseSize * imgScale;
+                const imgDrawH = baseSize * imgScale;
+                // ছবির সেন্টার পয়েন্ট বের করে ড্র করা
+                const centerX = photoX + photoW/2;
+                const centerY = photoY + photoH/2;
+                ctx.drawImage(userUploadedImg, (centerX - imgDrawW/2) + imgOffsetX, (centerY - imgDrawH/2) + imgOffsetY, imgDrawW, imgDrawH);
+            } else {
+                ctx.fillStyle = "#eee";
+                ctx.fillRect(photoX, photoY, photoW, photoH);
+                ctx.fillStyle = "#999";
+                ctx.font = "30px 'Tiro Bangla'";
+                ctx.textAlign = "center";
+                ctx.fillText("ছবি", photoX + photoW/2, photoY + photoH/2);
+            }
+            ctx.restore();
+
+            // ৬. ছাত্রের তথ্য (ডান দিকে - রেফারেন্সের মতো লেআউট)
+            const textStartX = 230; // ছবির ডান পাশ থেকে শুরু
+            const textStartY = 550; // নতুন ফিল্ডের জন্য আরেকটু উপরে উঠানো হয়েছে
+            const lineGap = 34; // লাইনের দূরত্ব কমানো হয়েছে যাতে সব লেখা ধরে
+
+            ctx.textAlign = "left";
+            ctx.font = "bold 26px 'Tiro Bangla'"; // ফন্ট সাইজ একটু কমানো হয়েছে
+
+            // ডেটা ভেরিয়েবল
+            const name = document.getElementById('name').value;
+            const fatherName = document.getElementById('fatherName').value;
+            const idNo = document.getElementById('idNo').value;
+            const stdClass = document.getElementById('stdClass').value; 
+            const className = document.getElementById('class').value; 
+            const bloodGroup = document.getElementById('bloodGroup').value; // নতুন: রক্তের গ্রুপ
+            const mobile = document.getElementById('mobile').value;
+            const address = document.getElementById('address').value; // নতুন: ঠিকানা
+            
+            // লেবেল এবং ভ্যালু ড্র করার হেল্পার ফাংশন
+            function drawField(label, value, yPos) {
+                ctx.fillStyle = "#000"; // লেবেল কালো
+                ctx.fillText(label, textStartX, yPos);
+                ctx.fillText(": " + value, textStartX + 140, yPos); // কোলন পজিশন ঠিক করা হয়েছে
+            }
+
+            drawField("নাম", name, textStartY);
+            drawField("পিতার নাম", fatherName, textStartY + lineGap);
+            drawField("রোল নং", idNo, textStartY + lineGap * 2);
+            drawField("শ্রেণি", stdClass, textStartY + lineGap * 3); 
+            drawField("বিভাগ", className, textStartY + lineGap * 4);
+            
+            // রক্তের গ্রুপ (লাল রঙে ফুটিয়ে তোলা হলো)
+            const bloodY = textStartY + lineGap * 5;
+            ctx.fillStyle = "#000";
+            ctx.fillText("রক্তের গ্রুপ", textStartX, bloodY);
+            ctx.fillStyle = "#d32f2f"; // লাল
+            ctx.fillText(": " + bloodGroup, textStartX + 140, bloodY);
+
+            // মোবাইল নাম্বার (কালো রঙে)
+            const mobileY = textStartY + lineGap * 6;
+            ctx.fillStyle = "#000";
+            ctx.fillText("মোবাইল", textStartX, mobileY);
+            ctx.fillStyle = "#d32f2f"; // লাল
+            ctx.fillText(": " + mobile, textStartX + 140, mobileY);
+
+            // ঠিকানা
+            const addressY = textStartY + lineGap * 7;
+            ctx.fillStyle = "#000";
+            ctx.fillText("ঠিকানা", textStartX, addressY);
+            ctx.fillText(": " + address, textStartX + 140, addressY);
+
+
+            // ৭. ফুটার এবং স্বাক্ষর
+            const footerY = height - 150;
+            
+            // অধ্যক্ষের স্বাক্ষর (ডান দিকে)
+            const signCenterX = width - 520;
+            
+            // স্বাক্ষর ইমেজ
+            const signW = 170; 
+            const signH = 63;
+            ctx.drawImage(signImg, signCenterX - signW/2, footerY - 50, signW, signH);
+
+            // স্বাক্ষরের লাইন
+            ctx.beginPath();
+            ctx.moveTo(signCenterX - 100, footerY);
+            ctx.lineTo(signCenterX + 100, footerY);
+            ctx.strokeStyle = "#000";
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            // অধ্যক্ষের স্বাক্ষর লেভেল
+            ctx.font = "22px 'Tiro Bangla'";
+            ctx.fillStyle = "#000";
+            ctx.textAlign = "center";
+            ctx.fillText("অধ্যক্ষের স্বাক্ষর", signCenterX, footerY + 30);
+
+            // অধ্যক্ষের নাম
+            ctx.font = "bold 18px 'Tiro Bangla'"; 
+            ctx.fillStyle = primaryGreen; 
+            ctx.fillText("হাঃ মাওঃ সালিমুল ইসলাম সেলিম", signCenterX, footerY + 55);
+
+            // একদম নিচের ডিজাইন (বটম বার)
+            // গোল্ডেন স্ট্রিপ
+            ctx.fillStyle = goldColor;
+            ctx.beginPath();
+            ctx.moveTo(0, height - 50);
+            ctx.lineTo(width, height - 80); // একটু কোণাকুনি
+            ctx.lineTo(width, height);
+            ctx.lineTo(0, height);
+            ctx.fill();
+
+            // গ্রিন স্ট্রিপ (সবার নিচে)
+            ctx.fillStyle = primaryGreen;
+            ctx.beginPath();
+            ctx.moveTo(0, height - 35);
+            ctx.lineTo(width, height - 65);
+            ctx.lineTo(width, height);
+            ctx.lineTo(0, height);
+            ctx.fill();
+            
+            // ঠিকানা টেক্সট (সাদা রঙে)
+            ctx.fillStyle = "#fff";
+            ctx.font = "20px 'Tiro Bangla'";
+            ctx.textAlign = "center";
+            ctx.fillText("বেগমপুর, মহেশপুর, ঝিনাইদহ", width/2, height - 18);
+        }
+
+        // ডাউনলোড ফাংশন
+        function downloadCard() {
+            const link = document.createElement('a');
+            // ফাইলের নাম আইডি দিয়ে ডায়নামিক করা
+            const idNo = document.getElementById('idNo').value;
+            link.download = `Ikra_Madrasa_ID_${idNo}.png`;
+            link.href = canvas.toDataURL("image/png", 1.0); // হাই কোয়ালিটি
+            link.click();
+        }
+
+        // --- পেছনের অংশের ডিজাইন শুরু ---
+        function drawBackCard() {
+            const width = canvasBack.width;
+            const height = canvasBack.height;
+            const primaryGreen = "#004d40"; 
+            const secondaryGreen = "#00695c"; 
+            const goldColor = "#C5A059"; 
+
+            // ১. ব্যাকগ্রাউন্ড
+            ctxBack.clearRect(0, 0, width, height);
+            ctxBack.fillStyle = "#FCFBF5"; 
+            ctxBack.fillRect(0, 0, width, height);
+
+            // ২. হেডার ডিজাইন (সামনের কার্ডের মতই)
+            ctxBack.beginPath();
+            ctxBack.moveTo(0, 0);
+            ctxBack.lineTo(width, 0);
+            ctxBack.lineTo(width, 150);
+            ctxBack.lineTo(0, 100);
+            ctxBack.closePath();
+            
+            const headerGrad = ctxBack.createLinearGradient(0, 0, 0, 200);
+            headerGrad.addColorStop(0, primaryGreen);
+            headerGrad.addColorStop(1, secondaryGreen);
+            ctxBack.fillStyle = headerGrad;
+            ctxBack.fill();
+
+            ctxBack.beginPath();
+            ctxBack.moveTo(0, 100);
+            ctxBack.lineTo(width, 150);
+            ctxBack.lineTo(width, 165);
+            ctxBack.lineTo(0, 115);
+            ctxBack.closePath();
+            ctxBack.fillStyle = goldColor;
+            ctxBack.fill();
+
+            // ক্যালিগ্রাফি (পিছনের অংশের উপরের হেডারে)
+            const calliW = width - 80;
+            const calliH = 100;
+            
+            const tempCanvasBack = document.createElement('canvas');
+            tempCanvasBack.width = calliW;
+            tempCanvasBack.height = calliH;
+            const tempCtxBack = tempCanvasBack.getContext('2d');
+            tempCtxBack.drawImage(calligraphyImg, 0, 0, calliW, calliH);
+            tempCtxBack.globalCompositeOperation = "source-in";
+            tempCtxBack.fillStyle = goldColor;
+            tempCtxBack.fillRect(0, 0, calliW, calliH);
+
+            ctxBack.save();
+            ctxBack.shadowColor = "rgba(0, 0, 0, 0.4)";
+            ctxBack.shadowBlur = 10;
+            ctxBack.shadowOffsetX = 5;
+            ctxBack.shadowOffsetY = 5;
+            ctxBack.drawImage(tempCanvasBack, 40, 30);
+            ctxBack.restore();
+
+            // জলছাপ (মাঝ বরাবর লোগো ৮% ট্রান্সপ্যারেন্ট)
+            ctxBack.save();
+            ctxBack.globalAlpha = 0.15; // ৮% ট্রান্সপ্যারেন্ট
+            const backLogoSize = 400; // লোগোর মানানসই সাইজ 
+            const backLogoX = (width - backLogoSize) / 2;
+            const backLogoY = (height - backLogoSize) / 2 - 30; // মাঝ বরাবর
+            ctxBack.drawImage(logoImg, backLogoX, backLogoY, backLogoSize, backLogoSize);
+            ctxBack.restore();
+
+            // ৩. সতর্কীকরণ বার্তা
+            ctxBack.fillStyle = "#000";
+            ctxBack.textAlign = "center";
+            ctxBack.font = "bold 28px 'Tiro Bangla'";
+            
+            const textY = 280;
+            const lineSpace = 45;
+            ctxBack.fillText("এই কার্ডটি ব্যাবহারকারী ব্যাতীত অন্য", width/2, textY);
+            ctxBack.fillText("কোথাও পাওয়া গেলে অত্র মাদরসায়", width/2, textY + lineSpace);
+            ctxBack.fillText("পৌঁছে দেওয়ার জন্যে অনুরোধ করা গেল।", width/2, textY + lineSpace * 2);
+
+            // ৪. যোগাযোগ সেকশন
+            const contactY = 460;
+            
+            // যোগাযোগের জন্য গোল্ডেন ব্যাকগ্রাউন্ড ডিজাইন (লেখা অনুযায়ী বড় করা হয়েছে)
+            ctxBack.fillStyle = goldColor;
+            ctxBack.beginPath();
+            ctxBack.arc(width/2 - 90, contactY - 12, 32, Math.PI/2, Math.PI*1.5);
+            ctxBack.arc(width/2 + 90, contactY - 12, 32, Math.PI*1.5, Math.PI/2);
+            ctxBack.fill();
+
+            ctxBack.fillStyle = "#fff";
+            ctxBack.font = "bold 34px 'Tiro Bangla'"; // সাইজ ২৬ থেকে ৩৪ করা হয়েছে
+            ctxBack.fillText("যোগাযোগ", width/2, contactY);
+
+            // মোবাইল নাম্বার
+            ctxBack.fillStyle = primaryGreen;
+            ctxBack.font = "bold 44px 'Tiro Bangla'"; // সাইজ ৩২ থেকে ৪৪ করা হয়েছে
+            ctxBack.fillText("০১৭৩২-৭০০৮৮৫", width/2, contactY + 65);
+
+            // ৫. মুহতামিম স্বাক্ষর
+            const signY = 600;
+            const signW = 180; 
+            const signH = 85;
+            // সামনের কার্ডের একই সিগনেচার ইমেজ ব্যবহার করা হয়েছে
+            ctxBack.drawImage(signImg, width/2 - signW/2, signY, signW, signH);
+
+            // স্বাক্ষরের উপরে লাইন
+            ctxBack.beginPath();
+            ctxBack.moveTo(width/2 - 90, signY + 60);
+            ctxBack.lineTo(width/2 + 90, signY + 60);
+            ctxBack.strokeStyle = "#000";
+            ctxBack.lineWidth = 2;
+            ctxBack.stroke();
+
+            ctxBack.fillStyle = "#000";
+            ctxBack.font = "22px 'Tiro Bangla'";
+            ctxBack.fillText("মুহতামিম", width/2, signY + 85);
+
+            // ৬. মাদ্রাসার নাম (3D Shadow Style)
+            const madrasaY = 820;
+            
+            ctxBack.save();
+            ctxBack.font = "bold 55px 'Tiro Bangla'";
+            
+            // শ্যাডো ইফেক্ট
+            ctxBack.fillStyle = "rgba(0,0,0,0.3)";
+            ctxBack.fillText("বেগমপুর ইকরা মাদরাসা", width/2 + 4, madrasaY + 4);
+            ctxBack.fillStyle = "rgba(0,0,0,0.2)";
+            ctxBack.fillText("বেগমপুর ইকরা মাদরাসা", width/2 + 2, madrasaY + 2);
+            
+            // মূল টেক্সট
+            const textGrad = ctxBack.createLinearGradient(0, madrasaY-50, 0, madrasaY);
+            textGrad.addColorStop(0, primaryGreen);
+            textGrad.addColorStop(1, secondaryGreen);
+            ctxBack.fillStyle = textGrad;
+            ctxBack.fillText("বেগমপুর ইকরা মাদরাসা", width/2, madrasaY);
+            ctxBack.restore();
+
+            // ঠিকানা
+            ctxBack.fillStyle = "#444";
+            ctxBack.font = "bold 24px 'Tiro Bangla'";
+            ctxBack.fillText("বেগমপুর, মহেশপুর, ঝিনাইদহ।", width/2, madrasaY + 45);
+
+            // ৭. বটম ডিজাইন (নিচের বর্ডার)
+            ctxBack.fillStyle = goldColor;
+            ctxBack.beginPath();
+            ctxBack.moveTo(0, height - 50);
+            ctxBack.lineTo(width, height - 80); 
+            ctxBack.lineTo(width, height);
+            ctxBack.lineTo(0, height);
+            ctxBack.fill();
+
+            ctxBack.fillStyle = primaryGreen;
+            ctxBack.beginPath();
+            ctxBack.moveTo(0, height - 35);
+            ctxBack.lineTo(width, height - 65);
+            ctxBack.lineTo(width, height);
+            ctxBack.lineTo(0, height);
+            ctxBack.fill();
+        }
+
+        // পিছনের অংশ ডাউনলোড ফাংশন
+        function downloadBackCard() {
+            const link = document.createElement('a');
+            const idNo = document.getElementById('idNo').value || "Back";
+            link.download = `Ikra_Madrasa_ID_Back_${idNo}.png`;
+            link.href = canvasBack.toDataURL("image/png", 1.0); 
+            link.click();
+        }
+
+        // ইনিশিয়াল ড্র
+        window.onload = function() {
+           // কিছু সময় অপেক্ষা করে ফন্ট লোড নিশ্চিত করা
+           setTimeout(function() {
+               drawCard();
+               drawBackCard();
+           }, 500);
+        };
+    </script>
+</body>
+</html>
