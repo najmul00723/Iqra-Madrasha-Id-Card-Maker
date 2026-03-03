@@ -27,6 +27,20 @@
             align-items: center;
         }
 
+        .section-title {
+            width: 100%;
+            max-width: 1200px;
+            text-align: center;
+            background: var(--primary-green);
+            color: white;
+            padding: 15px 0;
+            border-radius: 8px;
+            margin-top: 10px;
+            margin-bottom: 20px;
+            font-size: 32px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
         .container {
             display: flex;
             flex-wrap: wrap;
@@ -185,7 +199,7 @@
     </style>
 </head>
 <body>
-
+    <h1 class="section-title">শিক্ষার্থী আইডি জেনারেটর</h1>
     <div class="container">
         <div class="controls">
             <h2>তথ্য পূরণ করুন</h2>
@@ -214,6 +228,7 @@
                 <label>শ্রেণি</label>
                 <input type="text" id="stdClass" list="classList" placeholder="শ্রেণি নির্বাচন করুন বা লিখুন" value="" oninput="drawCard()">
                 <datalist id="classList">
+                    <option value="নার্সারি"></option>
                     <option value="১ম"></option>
                     <option value="২য়"></option>
                     <option value="৩য়"></option>
@@ -259,7 +274,7 @@
 
             <div class="form-group">
                 <label>ঠিকানা</label>
-                <input type="text" id="address" placeholder="ঠিকানা লিখুন" value="বেগমপুর, মহেশপুর" oninput="drawCard()">
+                <input type="text" id="address" placeholder="ঠিকানা লিখুন" value="বেগমপুর, মহেশপুর, ঝিনাইদহ" oninput="drawCard()">
             </div>
 
             <div class="form-group">
@@ -285,7 +300,85 @@
             <p class="helper-text">* ডাউনলোড করার পর রেজোলিউশন হাই থাকবে</p>
             
             <div class="developer-info">
-                Iqra Madrasha Id Card Maker | App Created By <strong>Najmul Bin Jalal Uddin</strong> <br>
+                Iqra Madrasha Id Card Generator | App Created By <strong>Najmul Bin Jalal Uddin</strong> <br>
+                Contact: 
+                <a href="https://wa.me/8801966649491" target="_blank" class="contact-link">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c-.003 1.396.366 2.76 1.057 3.965L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.521a6.6 6.6 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.56 6.56 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592m3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.73.73 0 0 0-.529.247c-.182.198-.691.677-.691 1.654s.71 1.916.81 2.049c.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232z"/>
+                    </svg>
+                    01966649491
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <h1 class="section-title" style="margin-top: 50px;">শিক্ষক আইডি জেনারেটর</h1>
+    <div class="container">
+        <div class="controls">
+            <h2>শিক্ষকের তথ্য পূরণ করুন</h2>
+            
+            <div class="form-group">
+                <label>শিক্ষকের ছবি আপলোড করুন</label>
+                <input type="file" id="t_photo" accept="image/*" onchange="t_loadImage(event)">
+            </div>
+
+            <div class="form-group">
+                <label>ছবির সাইজ (জুম করুন)</label>
+                <input type="range" id="t_zoomSlider" min="0.5" max="3" step="0.1" value="1" oninput="t_updateZoom(this.value)" style="width: 100%;">
+            </div>
+
+            <div class="form-group">
+                <label>শিক্ষকের নাম</label>
+                <input type="text" id="t_name" placeholder="নাম লিখুন" value="" oninput="drawTeacherCard()">
+            </div>
+
+            <div class="form-group">
+                <label>পদবি</label>
+                <input type="text" id="t_designation" placeholder="পদবি লিখুন" value="" oninput="drawTeacherCard()">
+            </div>
+            
+            <div class="form-group">
+                <label>রক্তের গ্রুপ</label>
+                <select id="t_bloodGroup" onchange="drawTeacherCard()">
+                    <option value="A+">A+</option>
+                    <option value="A-">A-</option>
+                    <option value="B+">B+</option>
+                    <option value="B-">B-</option>
+                    <option value="AB+">AB+</option>
+                    <option value="AB-">AB-</option>
+                    <option value="O+">O+</option>
+                    <option value="O-">O-</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>মোবাইল নাম্বার</label>
+                <input type="text" id="t_mobile" placeholder="০১৭XXXXXXXX" value="" oninput="drawTeacherCard()">
+            </div>
+
+            <div class="form-group">
+                <label>ঠিকানা</label>
+                <input type="text" id="t_address" placeholder="ঠিকানা লিখুন" value="বেগমপুর, মহেশপুর, ঝিনাইদহ" oninput="drawTeacherCard()">
+            </div>
+
+            <button id="downloadBtn" onclick="downloadTeacherCard()">শিক্ষক কার্ড (সামনে) ডাউনলোড</button>
+            <button id="downloadBtnBack" onclick="downloadTeacherBackCard()">শিক্ষক কার্ড (পিছনে) ডাউনলোড</button>
+        </div>
+
+        <div class="preview-area">
+            <div class="canvas-container">
+                <div style="text-align: center;">
+                    <h3 style="color: var(--primary-green); margin-bottom: 10px;">সামনের অংশ</h3>
+                    <canvas id="t_cardCanvas"></canvas>
+                </div>
+                <div style="text-align: center;">
+                    <h3 style="color: var(--primary-green); margin-bottom: 10px;">পিছনের অংশ</h3>
+                    <canvas id="t_cardBackCanvas"></canvas>
+                </div>
+            </div>
+            <p class="helper-text">* ডাউনলোড করার পর রেজোলিউশন হাই থাকবে</p>
+            <div class="developer-info">
+                Iqra Madrasha Id Card Generator | App Created By <strong>Najmul Bin Jalal Uddin</strong> <br>
                 Contact: 
                 <a href="https://wa.me/8801966649491" target="_blank" class="contact-link">
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
@@ -298,65 +391,105 @@
     </div>
 
     <script>
-        // কনফিগারেশন
+        // কনফিগারেশন - শিক্ষার্থী
         const canvas = document.getElementById('cardCanvas');
         const ctx = canvas.getContext('2d');
-        
         const canvasBack = document.getElementById('cardBackCanvas');
         const ctxBack = canvasBack.getContext('2d');
 
-        // --- নতুন কোড শুরু: ছবি মুভ এবং জুম করার ভেরিয়েবল ---
+        // কনফিগারেশন - শিক্ষক
+        const t_canvas = document.getElementById('t_cardCanvas');
+        const t_ctx = t_canvas.getContext('2d');
+        const t_canvasBack = document.getElementById('t_cardBackCanvas');
+        const t_ctxBack = t_canvasBack.getContext('2d');
+
+        // --- শিক্ষার্থী কোড: ছবি মুভ এবং জুম করার ভেরিয়েবল ---
         let imgOffsetX = 0;
         let imgOffsetY = 0;
-        let imgScale = 1; // ডিফল্ট জুম লেভেল ১
+        let imgScale = 1; 
         let isDragging = false;
         let startX, startY;
 
-        // জুম আপডেট ফাংশন
-        function updateZoom(val) {
-            imgScale = val;
-            drawCard();
+        // --- শিক্ষক কোড: ছবি মুভ এবং জুম করার ভেরিয়েবল ---
+        let t_imgOffsetX = 0;
+        let t_imgOffsetY = 0;
+        let t_imgScale = 1; 
+        let t_isDragging = false;
+        let t_startX, t_startY;
+        let t_userUploadedImg = null;
+
+        // টেক্সট র‍্যাপ করার ফাংশন (লম্বা লাইন নিচে নামানোর জন্য)
+        function wrapText(context, text, x, y, maxWidth, lineHeight) {
+            let words = text.split(' ');
+            let line = '';
+
+            for(let n = 0; n < words.length; n++) {
+                let testLine = line + words[n] + ' ';
+                let metrics = context.measureText(testLine);
+                let testWidth = metrics.width;
+                if (testWidth > maxWidth && n > 0) {
+                    context.fillText(line, x, y);
+                    line = words[n] + ' ';
+                    y += lineHeight;
+                }
+                else {
+                    line = testLine;
+                }
+            }
+            context.fillText(line, x, y);
         }
 
-        // মাউস ইভেন্ট লিসেনার (ড্র্যাগ করার জন্য)
+        // জুম আপডেট ফাংশন
+        function updateZoom(val) { imgScale = val; drawCard(); }
+        function t_updateZoom(val) { t_imgScale = val; drawTeacherCard(); }
+
+        // শিক্ষার্থী মাউস ও টাচ ইভেন্ট লিসেনার 
         canvas.addEventListener('mousedown', startDrag);
         canvas.addEventListener('mousemove', drag);
         canvas.addEventListener('mouseup', endDrag);
         canvas.addEventListener('mouseout', endDrag);
-        
-        // টাচ ইভেন্ট (মোবাইলের জন্য)
         canvas.addEventListener('touchstart', (e) => startDrag(e.touches[0]));
-        canvas.addEventListener('touchmove', (e) => {
-             e.preventDefault(); // স্ক্রল বন্ধ করা
-             drag(e.touches[0]);
-        });
+        canvas.addEventListener('touchmove', (e) => { e.preventDefault(); drag(e.touches[0]); });
         canvas.addEventListener('touchend', endDrag);
 
         function startDrag(e) {
             isDragging = true;
-            // ক্যানভাস স্ক্রিনে কতটুকু দেখাচ্ছে আর আসলে কত বড়, তার অনুপাত বের করা
             const rect = canvas.getBoundingClientRect();
-            const scaleX = canvas.width / rect.width;
-            const scaleY = canvas.height / rect.height;
-
-            startX = e.clientX * scaleX - imgOffsetX;
-            startY = e.clientY * scaleY - imgOffsetY;
+            startX = e.clientX * (canvas.width / rect.width) - imgOffsetX;
+            startY = e.clientY * (canvas.height / rect.height) - imgOffsetY;
         }
-
         function drag(e) {
             if (!isDragging) return;
             const rect = canvas.getBoundingClientRect();
-            const scaleX = canvas.width / rect.width;
-            const scaleY = canvas.height / rect.height;
-
-            imgOffsetX = e.clientX * scaleX - startX;
-            imgOffsetY = e.clientY * scaleY - startY;
-            drawCard(); // প্রতি মুভমেন্টে কার্ড রিফ্রেশ হবে
+            imgOffsetX = e.clientX * (canvas.width / rect.width) - startX;
+            imgOffsetY = e.clientY * (canvas.height / rect.height) - startY;
+            drawCard(); 
         }
+        function endDrag() { isDragging = false; }
 
-        function endDrag() {
-            isDragging = false;
+        // শিক্ষক মাউস ও টাচ ইভেন্ট লিসেনার 
+        t_canvas.addEventListener('mousedown', t_startDrag);
+        t_canvas.addEventListener('mousemove', t_drag);
+        t_canvas.addEventListener('mouseup', t_endDrag);
+        t_canvas.addEventListener('mouseout', t_endDrag);
+        t_canvas.addEventListener('touchstart', (e) => t_startDrag(e.touches[0]));
+        t_canvas.addEventListener('touchmove', (e) => { e.preventDefault(); t_drag(e.touches[0]); });
+        t_canvas.addEventListener('touchend', t_endDrag);
+
+        function t_startDrag(e) {
+            t_isDragging = true;
+            const rect = t_canvas.getBoundingClientRect();
+            t_startX = e.clientX * (t_canvas.width / rect.width) - t_imgOffsetX;
+            t_startY = e.clientY * (t_canvas.height / rect.height) - t_imgOffsetY;
         }
+        function t_drag(e) {
+            if (!t_isDragging) return;
+            const rect = t_canvas.getBoundingClientRect();
+            t_imgOffsetX = e.clientX * (t_canvas.width / rect.width) - t_startX;
+            t_imgOffsetY = e.clientY * (t_canvas.height / rect.height) - t_startY;
+            drawTeacherCard(); 
+        }
+        function t_endDrag() { t_isDragging = false; }
         // ইঞ্চিকে পিক্সেল এ কনভার্ট করা (300 DPI তে)
         const dpi = 300;
         const widthInch = 2.127;
@@ -368,48 +501,52 @@
         // ক্যানভাস সাইজ সেট করা
         canvas.width = canvasWidth;
         canvas.height = canvasHeight;
-        
         canvasBack.width = canvasWidth;
         canvasBack.height = canvasHeight;
+
+        t_canvas.width = canvasWidth;
+        t_canvas.height = canvasHeight;
+        t_canvasBack.width = canvasWidth;
+        t_canvasBack.height = canvasHeight;
         
         // স্ক্রিনে দেখার সুবিধার্থে স্টাইল দিয়ে ছোট দেখানো
-        canvas.style.width = "320px"; // প্রিভিউ সাইজ
+        canvas.style.width = "320px";
         canvas.style.height = "auto";
-        
         canvasBack.style.width = "320px";
         canvasBack.style.height = "auto";
+
+        t_canvas.style.width = "320px";
+        t_canvas.style.height = "auto";
+        t_canvasBack.style.width = "320px";
+        t_canvasBack.style.height = "auto";
 
         // ইমেজ সোর্স লোড করা
         const calligraphyImg = new Image();
         calligraphyImg.src = 'calligraphy.png'; 
-        
         const logoImg = new Image();
         logoImg.src = 'logo.png'; 
-
-        // নতুন: স্বাক্ষরের ছবি
         const signImg = new Image();
-        signImg.src = 'signature.png'; // এখানে আপনার স্বাক্ষরের ফাইলের নাম থাকবে
-
+        signImg.src = 'signature.png'; 
         const placeholderUser = new Image();
         placeholderUser.src = 'https://via.placeholder.com/300x350?text=Photo'; 
 
         let userUploadedImg = null;
-
-        // সব ইমেজ লোড হলে কার্ড আঁকা শুরু হবে
         let imagesLoaded = 0;
-        const totalImages = 3; // calligraphy + logo + signature (সংখ্যা ২ থেকে ৩ করা হয়েছে)
+        const totalImages = 3; 
 
         function checkImagesLoaded() {
             imagesLoaded++;
             if (imagesLoaded === totalImages) {
                 drawCard();
                 drawBackCard();
+                drawTeacherCard();
+                drawTeacherBackCard();
             }
         }
 
         calligraphyImg.onload = checkImagesLoaded;
         logoImg.onload = checkImagesLoaded;
-        signImg.onload = checkImagesLoaded; // স্বাক্ষরের লোডার যোগ করা হলো
+        signImg.onload = checkImagesLoaded; 
 
         // ছাত্রের ছবি লোড করার ফাংশন
         function loadImage(event) {
@@ -417,14 +554,28 @@
             reader.onload = function(){
                 userUploadedImg = new Image();
                 userUploadedImg.onload = function() {
-                    // নতুন ছবি নিলে পজিশন এবং জুম রিসেট হবে
-                    imgOffsetX = 0;
-                    imgOffsetY = 0;
-                    imgScale = 1; 
-                    document.getElementById('zoomSlider').value = 1; // স্লাইডার রিসেট
+                    imgOffsetX = 0; imgOffsetY = 0; imgScale = 1; 
+                    document.getElementById('zoomSlider').value = 1; 
                     drawCard();
                 }
                 userUploadedImg.src = reader.result;
+            }
+            if(event.target.files[0]){
+                reader.readAsDataURL(event.target.files[0]);
+            }
+        }
+
+        // শিক্ষকের ছবি লোড করার ফাংশন
+        function t_loadImage(event) {
+            const reader = new FileReader();
+            reader.onload = function(){
+                t_userUploadedImg = new Image();
+                t_userUploadedImg.onload = function() {
+                    t_imgOffsetX = 0; t_imgOffsetY = 0; t_imgScale = 1; 
+                    document.getElementById('t_zoomSlider').value = 1; 
+                    drawTeacherCard();
+                }
+                t_userUploadedImg.src = reader.result;
             }
             if(event.target.files[0]){
                 reader.readAsDataURL(event.target.files[0]);
@@ -658,11 +809,14 @@
             ctx.fillStyle = "#d32f2f"; // লাল
             ctx.fillText(": " + mobile, textStartX + 140, mobileY);
 
-            // ঠিকানা
+            // ঠিকানা (র‍্যাপ করার লজিক সহ)
             const addressY = textStartY + lineGap * 7;
             ctx.fillStyle = "#000";
             ctx.fillText("ঠিকানা", textStartX, addressY);
-            ctx.fillText(": " + address, textStartX + 140, addressY);
+            ctx.fillText(":", textStartX + 130, addressY); 
+            
+            // টেক্সট র‍্যাপ কল করা হচ্ছে (ম্যাক্স উইডথ সেট করে দেওয়া হয়েছে যাতে বাইরে না যায়)
+            wrapText(ctx, address, textStartX + 140, addressY, width - (textStartX + 150), lineGap - 5);
 
 
             // ৭. ফুটার এবং স্বাক্ষর
@@ -898,12 +1052,278 @@
             link.click();
         }
 
+        // --- শিক্ষকের কার্ড ড্রয়িং ফাংশন শুরু ---
+        function drawTeacherCard() {
+            const width = t_canvas.width;
+            const height = t_canvas.height;
+            const primaryGreen = "#004d40"; 
+            const secondaryGreen = "#00695c"; 
+            const goldColor = "#C5A059"; 
+
+            t_ctx.clearRect(0, 0, width, height);
+            t_ctx.fillStyle = "#FCFBF5"; 
+            t_ctx.fillRect(0, 0, width, height);
+
+            t_ctx.beginPath();
+            t_ctx.moveTo(0, 0); t_ctx.lineTo(width, 0);
+            t_ctx.lineTo(width, 380); t_ctx.lineTo(0, 320);
+            t_ctx.closePath();
+            
+            const headerGrad = t_ctx.createLinearGradient(0, 0, 0, 400);
+            headerGrad.addColorStop(0, primaryGreen);
+            headerGrad.addColorStop(1, secondaryGreen);
+            t_ctx.fillStyle = headerGrad; t_ctx.fill();
+
+            t_ctx.beginPath();
+            t_ctx.moveTo(0, 320); t_ctx.lineTo(width, 380);
+            t_ctx.lineTo(width, 395); t_ctx.lineTo(0, 335);
+            t_ctx.closePath();
+            t_ctx.fillStyle = goldColor; t_ctx.fill();
+
+            t_ctx.save();
+            t_ctx.globalAlpha = 0.1; 
+            t_ctx.fillStyle = "#FFD700";
+            for(let i=0; i<5; i++) {
+                t_ctx.beginPath();
+                t_ctx.moveTo(0, 100 + (i*60)); t_ctx.lineTo(50, 150 + (i*60)); t_ctx.lineTo(0, 200 + (i*60)); t_ctx.fill();
+            }
+            for(let i=0; i<5; i++) {
+                t_ctx.beginPath();
+                t_ctx.moveTo(width, 100 + (i*60)); t_ctx.lineTo(width-50, 150 + (i*60)); t_ctx.lineTo(width, 200 + (i*60)); t_ctx.fill();
+            }
+            t_ctx.restore();
+
+            const calliW = width - 80; const calliH = 100;
+            const tempCanvas = document.createElement('canvas');
+            tempCanvas.width = calliW; tempCanvas.height = calliH;
+            const tempCtx = tempCanvas.getContext('2d');
+            tempCtx.drawImage(calligraphyImg, 0, 0, calliW, calliH);
+            tempCtx.globalCompositeOperation = "source-in";
+            tempCtx.fillStyle = goldColor; tempCtx.fillRect(0, 0, calliW, calliH);
+
+            t_ctx.save();
+            t_ctx.shadowColor = "rgba(0, 0, 0, 0.4)"; t_ctx.shadowBlur = 10;
+            t_ctx.shadowOffsetX = 5; t_ctx.shadowOffsetY = 5;
+            t_ctx.drawImage(tempCanvas, 40, 30);
+            t_ctx.restore();
+
+            const logoSize = 200;
+            const logoX = (width - logoSize) / 2; const logoY = 135;
+            t_ctx.save(); 
+            t_ctx.shadowColor = "rgba(0, 0, 0, 0.35)"; t_ctx.shadowBlur = 20;
+            t_ctx.shadowOffsetX = 0; t_ctx.shadowOffsetY = 10; 
+            t_ctx.drawImage(logoImg, logoX, logoY, logoSize, logoSize);
+            t_ctx.restore(); 
+
+            t_ctx.save();
+            t_ctx.textAlign = "center";
+            const textGrad = t_ctx.createLinearGradient(0, 420, width, 420);
+            textGrad.addColorStop(0.3, "#B8860B"); textGrad.addColorStop(0.5, "#FFD700"); textGrad.addColorStop(0.7, "#B8860B");
+            t_ctx.fillStyle = textGrad;
+            t_ctx.shadowColor = "rgba(0,0,0,0.3)"; t_ctx.shadowBlur = 4; t_ctx.shadowOffsetX = 2; t_ctx.shadowOffsetY = 2;
+            t_ctx.font = "bold 65px 'Tiro Bangla'";
+            t_ctx.fillText("বেগমপুর ইকরা মাদরাসা", width / 2, 460);
+            t_ctx.restore();
+
+            t_ctx.fillStyle = "#000"; t_ctx.font = "bold 35px 'Tiro Bangla'"; t_ctx.textAlign = "center";
+            const subTitleY = 510;
+            t_ctx.fillText("পরিচয়পত্র", width / 2, subTitleY);
+            t_ctx.beginPath();
+            t_ctx.moveTo(width/2 - 120, subTitleY + 10); t_ctx.lineTo(width/2 + 120, subTitleY + 10);
+            t_ctx.strokeStyle = "#000"; t_ctx.lineWidth = 2; t_ctx.stroke();
+
+            const photoW = 200; const photoH = 240; 
+            const photoX = 10;  const photoY = 550;
+
+            t_ctx.save();
+            t_ctx.lineWidth = 8; t_ctx.strokeStyle = goldColor; t_ctx.strokeRect(photoX, photoY, photoW, photoH);
+            t_ctx.beginPath(); t_ctx.rect(photoX, photoY, photoW, photoH); t_ctx.clip();
+
+            if (t_userUploadedImg) {
+                const baseSize = 300; 
+                const imgDrawW = baseSize * t_imgScale; const imgDrawH = baseSize * t_imgScale;
+                const centerX = photoX + photoW/2; const centerY = photoY + photoH/2;
+                t_ctx.drawImage(t_userUploadedImg, (centerX - imgDrawW/2) + t_imgOffsetX, (centerY - imgDrawH/2) + t_imgOffsetY, imgDrawW, imgDrawH);
+            } else {
+                t_ctx.fillStyle = "#eee"; t_ctx.fillRect(photoX, photoY, photoW, photoH);
+                t_ctx.fillStyle = "#999"; t_ctx.font = "30px 'Tiro Bangla'"; t_ctx.textAlign = "center";
+                t_ctx.fillText("ছবি", photoX + photoW/2, photoY + photoH/2);
+            }
+            t_ctx.restore();
+
+            const textStartX = 230; 
+            const textStartY = 560; 
+            const lineGap = 42; 
+
+            t_ctx.textAlign = "left"; t_ctx.font = "bold 26px 'Tiro Bangla'"; 
+
+            const t_name = document.getElementById('t_name').value;
+            const t_designation = document.getElementById('t_designation').value;
+            const t_bloodGroup = document.getElementById('t_bloodGroup').value;
+            const t_mobile = document.getElementById('t_mobile').value;
+            const t_address = document.getElementById('t_address').value; 
+            
+            function drawTField(label, value, yPos) {
+                t_ctx.fillStyle = "#000"; t_ctx.fillText(label, textStartX, yPos);
+                t_ctx.fillText(": " + value, textStartX + 140, yPos); 
+            }
+
+            drawTField("নাম", t_name, textStartY);
+            drawTField("পদবি", t_designation, textStartY + lineGap);
+            
+            const bloodY = textStartY + lineGap * 2;
+            t_ctx.fillStyle = "#000"; t_ctx.fillText("রক্তের গ্রুপ", textStartX, bloodY);
+            t_ctx.fillStyle = "#d32f2f"; t_ctx.fillText(": " + t_bloodGroup, textStartX + 140, bloodY);
+
+            const mobileY = textStartY + lineGap * 3;
+            t_ctx.fillStyle = "#000"; t_ctx.fillText("মোবাইল", textStartX, mobileY);
+            t_ctx.fillStyle = "#d32f2f"; t_ctx.fillText(": " + t_mobile, textStartX + 140, mobileY);
+
+            // ঠিকানা (র‍্যাপ করার লজিক সহ)
+            const addressY = textStartY + lineGap * 4;
+            t_ctx.fillStyle = "#000"; t_ctx.fillText("ঠিকানা", textStartX, addressY);
+            t_ctx.fillText(":", textStartX + 130, addressY);
+            
+            // টেক্সট র‍্যাপ কল করা হচ্ছে
+            wrapText(t_ctx, t_address, textStartX + 140, addressY, width - (textStartX + 150), lineGap - 5);
+
+            const footerY = height - 150;
+            const signCenterX = width - 520;
+            const signW = 170; const signH = 63;
+            t_ctx.drawImage(signImg, signCenterX - signW/2, footerY - 50, signW, signH);
+
+            t_ctx.beginPath();
+            t_ctx.moveTo(signCenterX - 100, footerY); t_ctx.lineTo(signCenterX + 100, footerY);
+            t_ctx.strokeStyle = "#000"; t_ctx.lineWidth = 2; t_ctx.stroke();
+
+            t_ctx.font = "22px 'Tiro Bangla'"; t_ctx.fillStyle = "#000"; t_ctx.textAlign = "center";
+            t_ctx.fillText("অধ্যক্ষের স্বাক্ষর", signCenterX, footerY + 30);
+            t_ctx.font = "bold 18px 'Tiro Bangla'"; t_ctx.fillStyle = primaryGreen; 
+            t_ctx.fillText("হাঃ মাওঃ সালিমুল ইসলাম সেলিম", signCenterX, footerY + 55);
+
+            t_ctx.fillStyle = goldColor; t_ctx.beginPath();
+            t_ctx.moveTo(0, height - 50); t_ctx.lineTo(width, height - 80); 
+            t_ctx.lineTo(width, height); t_ctx.lineTo(0, height); t_ctx.fill();
+
+            t_ctx.fillStyle = primaryGreen; t_ctx.beginPath();
+            t_ctx.moveTo(0, height - 35); t_ctx.lineTo(width, height - 65);
+            t_ctx.lineTo(width, height); t_ctx.lineTo(0, height); t_ctx.fill();
+            
+            t_ctx.fillStyle = "#fff"; t_ctx.font = "20px 'Tiro Bangla'"; t_ctx.textAlign = "center";
+            t_ctx.fillText("বেগমপুর, মহেশপুর, ঝিনাইদহ", width/2, height - 18);
+        }
+
+        function drawTeacherBackCard() {
+            const width = t_canvasBack.width; const height = t_canvasBack.height;
+            const primaryGreen = "#004d40"; const secondaryGreen = "#00695c"; const goldColor = "#C5A059"; 
+
+            t_ctxBack.clearRect(0, 0, width, height);
+            t_ctxBack.fillStyle = "#FCFBF5"; t_ctxBack.fillRect(0, 0, width, height);
+
+            t_ctxBack.beginPath();
+            t_ctxBack.moveTo(0, 0); t_ctxBack.lineTo(width, 0);
+            t_ctxBack.lineTo(width, 150); t_ctxBack.lineTo(0, 100); t_ctxBack.closePath();
+            
+            const headerGrad = t_ctxBack.createLinearGradient(0, 0, 0, 200);
+            headerGrad.addColorStop(0, primaryGreen); headerGrad.addColorStop(1, secondaryGreen);
+            t_ctxBack.fillStyle = headerGrad; t_ctxBack.fill();
+
+            t_ctxBack.beginPath();
+            t_ctxBack.moveTo(0, 100); t_ctxBack.lineTo(width, 150);
+            t_ctxBack.lineTo(width, 165); t_ctxBack.lineTo(0, 115); t_ctxBack.closePath();
+            t_ctxBack.fillStyle = goldColor; t_ctxBack.fill();
+
+            const calliW = width - 80; const calliH = 100;
+            const tempCanvasBack = document.createElement('canvas');
+            tempCanvasBack.width = calliW; tempCanvasBack.height = calliH;
+            const tempCtxBack = tempCanvasBack.getContext('2d');
+            tempCtxBack.drawImage(calligraphyImg, 0, 0, calliW, calliH);
+            tempCtxBack.globalCompositeOperation = "source-in"; tempCtxBack.fillStyle = goldColor; tempCtxBack.fillRect(0, 0, calliW, calliH);
+
+            t_ctxBack.save();
+            t_ctxBack.shadowColor = "rgba(0, 0, 0, 0.4)"; t_ctxBack.shadowBlur = 10;
+            t_ctxBack.shadowOffsetX = 5; t_ctxBack.shadowOffsetY = 5;
+            t_ctxBack.drawImage(tempCanvasBack, 40, 30);
+            t_ctxBack.restore();
+
+            t_ctxBack.save();
+            t_ctxBack.globalAlpha = 0.15; 
+            const backLogoSize = 400; 
+            const backLogoX = (width - backLogoSize) / 2;
+            const backLogoY = (height - backLogoSize) / 2 - 30; 
+            t_ctxBack.drawImage(logoImg, backLogoX, backLogoY, backLogoSize, backLogoSize);
+            t_ctxBack.restore();
+
+            t_ctxBack.fillStyle = "#000"; t_ctxBack.textAlign = "center"; t_ctxBack.font = "bold 28px 'Tiro Bangla'";
+            const textY = 280; const lineSpace = 45;
+            t_ctxBack.fillText("এই কার্ডটি ব্যাবহারকারী ব্যাতীত অন্য", width/2, textY);
+            t_ctxBack.fillText("কোথাও পাওয়া গেলে অত্র মাদরসায়", width/2, textY + lineSpace);
+            t_ctxBack.fillText("পৌঁছে দেওয়ার জন্যে অনুরোধ করা গেল।", width/2, textY + lineSpace * 2);
+
+            const contactY = 460;
+            t_ctxBack.fillStyle = goldColor; t_ctxBack.beginPath();
+            t_ctxBack.arc(width/2 - 90, contactY - 12, 32, Math.PI/2, Math.PI*1.5);
+            t_ctxBack.arc(width/2 + 90, contactY - 12, 32, Math.PI*1.5, Math.PI/2); t_ctxBack.fill();
+
+            t_ctxBack.fillStyle = "#fff"; t_ctxBack.font = "bold 34px 'Tiro Bangla'"; 
+            t_ctxBack.fillText("যোগাযোগ", width/2, contactY);
+
+            t_ctxBack.fillStyle = primaryGreen; t_ctxBack.font = "bold 44px 'Tiro Bangla'"; 
+            t_ctxBack.fillText("০১৭৩২-৭০০৮৮৫", width/2, contactY + 65);
+
+            const signY = 600; const signW = 180; const signH = 85;
+            t_ctxBack.drawImage(signImg, width/2 - signW/2, signY, signW, signH);
+
+            t_ctxBack.beginPath();
+            t_ctxBack.moveTo(width/2 - 90, signY + 60); t_ctxBack.lineTo(width/2 + 90, signY + 60);
+            t_ctxBack.strokeStyle = "#000"; t_ctxBack.lineWidth = 2; t_ctxBack.stroke();
+
+            t_ctxBack.fillStyle = "#000"; t_ctxBack.font = "22px 'Tiro Bangla'";
+            t_ctxBack.fillText("মুহতামিম", width/2, signY + 85);
+
+            const madrasaY = 820;
+            t_ctxBack.save(); t_ctxBack.font = "bold 55px 'Tiro Bangla'";
+            t_ctxBack.fillStyle = "rgba(0,0,0,0.3)"; t_ctxBack.fillText("বেগমপুর ইকরা মাদরাসা", width/2 + 4, madrasaY + 4);
+            t_ctxBack.fillStyle = "rgba(0,0,0,0.2)"; t_ctxBack.fillText("বেগমপুর ইকরা মাদরাসা", width/2 + 2, madrasaY + 2);
+            const textGrad = t_ctxBack.createLinearGradient(0, madrasaY-50, 0, madrasaY);
+            textGrad.addColorStop(0, primaryGreen); textGrad.addColorStop(1, secondaryGreen);
+            t_ctxBack.fillStyle = textGrad; t_ctxBack.fillText("বেগমপুর ইকরা মাদরাসা", width/2, madrasaY); t_ctxBack.restore();
+
+            t_ctxBack.fillStyle = "#444"; t_ctxBack.font = "bold 24px 'Tiro Bangla'";
+            t_ctxBack.fillText("বেগমপুর, মহেশপুর, ঝিনাইদহ।", width/2, madrasaY + 45);
+
+            t_ctxBack.fillStyle = goldColor; t_ctxBack.beginPath();
+            t_ctxBack.moveTo(0, height - 50); t_ctxBack.lineTo(width, height - 80); 
+            t_ctxBack.lineTo(width, height); t_ctxBack.lineTo(0, height); t_ctxBack.fill();
+
+            t_ctxBack.fillStyle = primaryGreen; t_ctxBack.beginPath();
+            t_ctxBack.moveTo(0, height - 35); t_ctxBack.lineTo(width, height - 65);
+            t_ctxBack.lineTo(width, height); t_ctxBack.lineTo(0, height); t_ctxBack.fill();
+        }
+
+        function downloadTeacherCard() {
+            const link = document.createElement('a');
+            const t_name = document.getElementById('t_name').value || "Teacher";
+            link.download = `Ikra_Madrasa_Teacher_ID_${t_name}.png`;
+            link.href = t_canvas.toDataURL("image/png", 1.0); 
+            link.click();
+        }
+
+        function downloadTeacherBackCard() {
+            const link = document.createElement('a');
+            const t_name = document.getElementById('t_name').value || "Teacher_Back";
+            link.download = `Ikra_Madrasa_Teacher_ID_Back_${t_name}.png`;
+            link.href = t_canvasBack.toDataURL("image/png", 1.0); 
+            link.click();
+        }
+
         // ইনিশিয়াল ড্র
         window.onload = function() {
-           // কিছু সময় অপেক্ষা করে ফন্ট লোড নিশ্চিত করা
            setTimeout(function() {
                drawCard();
                drawBackCard();
+               drawTeacherCard();
+               drawTeacherBackCard();
            }, 500);
         };
     </script>
