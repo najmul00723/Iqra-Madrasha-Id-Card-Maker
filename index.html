@@ -159,7 +159,7 @@
             max-width: 100%;
             height: auto;
             cursor: move;
-            touch-action: none;
+            touch-action: pan-y;
         }
 
         .helper-text {
@@ -449,7 +449,7 @@
         canvas.addEventListener('mouseup', endDrag);
         canvas.addEventListener('mouseout', endDrag);
         canvas.addEventListener('touchstart', (e) => startDrag(e.touches[0]));
-        canvas.addEventListener('touchmove', (e) => { e.preventDefault(); drag(e.touches[0]); });
+        canvas.addEventListener('touchmove', (e) => { drag(e.touches[0]); }, { passive: true });
         canvas.addEventListener('touchend', endDrag);
 
         function startDrag(e) {
@@ -473,7 +473,7 @@
         t_canvas.addEventListener('mouseup', t_endDrag);
         t_canvas.addEventListener('mouseout', t_endDrag);
         t_canvas.addEventListener('touchstart', (e) => t_startDrag(e.touches[0]));
-        t_canvas.addEventListener('touchmove', (e) => { e.preventDefault(); t_drag(e.touches[0]); });
+        t_canvas.addEventListener('touchmove', (e) => { t_drag(e.touches[0]); }, { passive: true });
         t_canvas.addEventListener('touchend', t_endDrag);
 
         function t_startDrag(e) {
@@ -748,8 +748,17 @@
             // ছবি ড্র করা
             if (userUploadedImg) {
                 const baseSize = 300; 
-                const imgDrawW = baseSize * imgScale;
-                const imgDrawH = baseSize * imgScale;
+                const aspectRatio = userUploadedImg.width / userUploadedImg.height;
+                let imgDrawW, imgDrawH;
+                
+                if (aspectRatio > 1) { 
+                    imgDrawW = baseSize * imgScale;
+                    imgDrawH = (baseSize / aspectRatio) * imgScale;
+                } else { 
+                    imgDrawH = baseSize * imgScale;
+                    imgDrawW = (baseSize * aspectRatio) * imgScale;
+                }
+                
                 // ছবির সেন্টার পয়েন্ট বের করে ড্র করা
                 const centerX = photoX + photoW/2;
                 const centerY = photoY + photoH/2;
@@ -1000,6 +1009,10 @@
             ctxBack.font = "22px 'Tiro Bangla'";
             ctxBack.fillText("মুহতামিম", width/2, signY + 85);
 
+            ctxBack.font = "bold 20px 'Tiro Bangla'";
+            ctxBack.fillStyle = primaryGreen;
+            ctxBack.fillText("হাঃ মাওঃ সালিমুল ইসলাম সেলিম", width/2, signY + 115);
+
             // ৬. মাদ্রাসার নাম (3D Shadow Style)
             const madrasaY = 820;
             
@@ -1141,7 +1154,17 @@
 
             if (t_userUploadedImg) {
                 const baseSize = 300; 
-                const imgDrawW = baseSize * t_imgScale; const imgDrawH = baseSize * t_imgScale;
+                const aspectRatio = t_userUploadedImg.width / t_userUploadedImg.height;
+                let imgDrawW, imgDrawH;
+                
+                if (aspectRatio > 1) { 
+                    imgDrawW = baseSize * t_imgScale;
+                    imgDrawH = (baseSize / aspectRatio) * t_imgScale;
+                } else { 
+                    imgDrawH = baseSize * t_imgScale;
+                    imgDrawW = (baseSize * aspectRatio) * t_imgScale;
+                }
+
                 const centerX = photoX + photoW/2; const centerY = photoY + photoH/2;
                 t_ctx.drawImage(t_userUploadedImg, (centerX - imgDrawW/2) + t_imgOffsetX, (centerY - imgDrawH/2) + t_imgOffsetY, imgDrawW, imgDrawH);
             } else {
@@ -1280,6 +1303,10 @@
 
             t_ctxBack.fillStyle = "#000"; t_ctxBack.font = "22px 'Tiro Bangla'";
             t_ctxBack.fillText("মুহতামিম", width/2, signY + 85);
+
+            t_ctxBack.font = "bold 20px 'Tiro Bangla'";
+            t_ctxBack.fillStyle = primaryGreen;
+            t_ctxBack.fillText("হাঃ মাওঃ সালিমুল ইসলাম সেলিম", width/2, signY + 115);
 
             const madrasaY = 820;
             t_ctxBack.save(); t_ctxBack.font = "bold 55px 'Tiro Bangla'";
