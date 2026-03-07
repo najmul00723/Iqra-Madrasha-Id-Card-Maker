@@ -255,17 +255,17 @@
             
             <div class="form-group">
                 <label>রক্তের গ্রুপ</label>
-                <select id="bloodGroup" onchange="drawCard()">
-                    <option value="জানা নেই">জানা নেই</option>
-                    <option value="A+">A+</option>
-                    <option value="A-">A-</option>
-                    <option value="B+">B+</option>
-                    <option value="B-">B-</option>
-                    <option value="AB+">AB+</option>
-                    <option value="AB-">AB-</option>
-                    <option value="O+">O+</option>
-                    <option value="O-">O-</option>
-                </select>
+                <input type="text" id="bloodGroup" list="bloodList" placeholder="রক্তের গ্রুপ নির্বাচন করুন" value="" oninput="drawCard()">
+                <datalist id="bloodList">
+                    <option value="A+"></option>
+                    <option value="A-"></option>
+                    <option value="B+"></option>
+                    <option value="B-"></option>
+                    <option value="AB+"></option>
+                    <option value="AB-"></option>
+                    <option value="O+"></option>
+                    <option value="O-"></option>
+                </datalist>
             </div>
 
             <div class="form-group">
@@ -340,17 +340,17 @@
             
             <div class="form-group">
                 <label>রক্তের গ্রুপ</label>
-                <select id="t_bloodGroup" onchange="drawTeacherCard()">
-                    <option value="জানা নেই">জানা নেই</option>
-                    <option value="A+">A+</option>
-                    <option value="A-">A-</option>
-                    <option value="B+">B+</option>
-                    <option value="B-">B-</option>
-                    <option value="AB+">AB+</option>
-                    <option value="AB-">AB-</option>
-                    <option value="O+">O+</option>
-                    <option value="O-">O-</option>
-                </select>
+                <input type="text" id="t_bloodGroup" list="t_bloodList" placeholder="রক্তের গ্রুপ নির্বাচন করুন" value="" oninput="drawTeacherCard()">
+                <datalist id="t_bloodList">
+                    <option value="A+"></option>
+                    <option value="A-"></option>
+                    <option value="B+"></option>
+                    <option value="B-"></option>
+                    <option value="AB+"></option>
+                    <option value="AB-"></option>
+                    <option value="O+"></option>
+                    <option value="O-"></option>
+                </datalist>
             </div>
 
             <div class="form-group">
@@ -777,11 +777,11 @@
 
             // ৬. ছাত্রের তথ্য (ডান দিকে - রেফারেন্সের মতো লেআউট)
             const textStartX = 230; // ছবির ডান পাশ থেকে শুরু
-            const textStartY = 550; // নতুন ফিল্ডের জন্য আরেকটু উপরে উঠানো হয়েছে
-            const lineGap = 34; // লাইনের দূরত্ব কমানো হয়েছে যাতে সব লেখা ধরে
+            let currentY = 550; // ডাইনামিক Y পজিশনের জন্য ভেরিয়েবল
+            const lineGap = 34; // লাইনের বেসিক দূরত্ব
 
             ctx.textAlign = "left";
-            ctx.font = "bold 26px 'Tiro Bangla'"; // ফন্ট সাইজ একটু কমানো হয়েছে
+            ctx.font = "bold 26px 'Tiro Bangla'"; 
 
             // ডেটা ভেরিয়েবল
             const name = document.getElementById('name').value;
@@ -789,46 +789,50 @@
             const idNo = document.getElementById('idNo').value;
             const stdClass = document.getElementById('stdClass').value; 
             const className = document.getElementById('class').value; 
-            const bloodGroup = document.getElementById('bloodGroup').value; // নতুন: রক্তের গ্রুপ
+            const bloodGroup = document.getElementById('bloodGroup').value; 
             const mobile = document.getElementById('mobile').value;
-            const address = document.getElementById('address').value; // নতুন: ঠিকানা
+            const address = document.getElementById('address').value; 
             
-            // লেবেল এবং ভ্যালু ড্র করার হেল্পার ফাংশন
-            function drawField(label, value, yPos) {
-                ctx.fillStyle = "#000"; // লেবেল কালো
-                ctx.fillText(label, textStartX, yPos);
-                ctx.fillText(": " + value, textStartX + 140, yPos); // কোলন পজিশন ঠিক করা হয়েছে
+            // ডাইনামিক লেবেল এবং ভ্যালু ড্র করার হেল্পার ফাংশন (র‍্যাপ সাপোর্ট সহ)
+            function drawDynamicField(label, value, isRed = false) {
+                ctx.fillStyle = "#000"; 
+                ctx.fillText(label, textStartX, currentY);
+                ctx.fillStyle = isRed ? "#d32f2f" : "#000";
+                ctx.fillText(":", textStartX + 130, currentY); 
+                
+                // টেক্সট র‍্যাপ এবং নতুন Y পজিশন ক্যালকুলেট
+                let words = value.split(' ');
+                let line = '';
+                let tempY = currentY;
+                let maxWidth = width - (textStartX + 150);
+                
+                for(let n = 0; n < words.length; n++) {
+                    let testLine = line + words[n] + ' ';
+                    let metrics = ctx.measureText(testLine);
+                    let testWidth = metrics.width;
+                    if (testWidth > maxWidth && n > 0) {
+                        ctx.fillText(line, textStartX + 140, tempY);
+                        line = words[n] + ' ';
+                        tempY += lineGap - 5;
+                    }
+                    else {
+                        line = testLine;
+                    }
+                }
+                ctx.fillText(line, textStartX + 140, tempY);
+                
+                // পরবর্তী ফিল্ডের জন্য currentY আপডেট করা
+                currentY = tempY + lineGap;
             }
 
-            drawField("নাম", name, textStartY);
-            drawField("পিতার নাম", fatherName, textStartY + lineGap);
-            drawField("রোল নং", idNo, textStartY + lineGap * 2);
-            drawField("শ্রেণি", stdClass, textStartY + lineGap * 3); 
-            drawField("বিভাগ", className, textStartY + lineGap * 4);
-            
-            // রক্তের গ্রুপ (লাল রঙে ফুটিয়ে তোলা হলো)
-            const bloodY = textStartY + lineGap * 5;
-            ctx.fillStyle = "#000";
-            ctx.fillText("রক্তের গ্রুপ", textStartX, bloodY);
-            ctx.fillStyle = "#d32f2f"; // লাল
-            ctx.fillText(": " + bloodGroup, textStartX + 140, bloodY);
-
-            // মোবাইল নাম্বার (কালো রঙে)
-            const mobileY = textStartY + lineGap * 6;
-            ctx.fillStyle = "#000";
-            ctx.fillText("মোবাইল", textStartX, mobileY);
-            ctx.fillStyle = "#d32f2f"; // লাল
-            ctx.fillText(": " + mobile, textStartX + 140, mobileY);
-
-            // ঠিকানা (র‍্যাপ করার লজিক সহ)
-            const addressY = textStartY + lineGap * 7;
-            ctx.fillStyle = "#000";
-            ctx.fillText("ঠিকানা", textStartX, addressY);
-            ctx.fillText(":", textStartX + 130, addressY); 
-            
-            // টেক্সট র‍্যাপ কল করা হচ্ছে (ম্যাক্স উইডথ সেট করে দেওয়া হয়েছে যাতে বাইরে না যায়)
-            wrapText(ctx, address, textStartX + 140, addressY, width - (textStartX + 150), lineGap - 5);
-
+            drawDynamicField("নাম", name);
+            drawDynamicField("পিতার নাম", fatherName);
+            drawDynamicField("রোল নং", idNo);
+            drawDynamicField("শ্রেণি", stdClass); 
+            drawDynamicField("বিভাগ", className);
+            drawDynamicField("রক্তের গ্রুপ", bloodGroup, true);
+            drawDynamicField("মোবাইল", mobile, true);
+            drawDynamicField("ঠিকানা", address);
 
             // ৭. ফুটার এবং স্বাক্ষর
             const footerY = height - 150;
@@ -1177,7 +1181,7 @@
             t_ctx.restore();
 
             const textStartX = 230; 
-            const textStartY = 560; 
+            let t_currentY = 560; 
             const lineGap = 42; 
 
             t_ctx.textAlign = "left"; t_ctx.font = "bold 26px 'Tiro Bangla'"; 
@@ -1188,29 +1192,40 @@
             const t_mobile = document.getElementById('t_mobile').value;
             const t_address = document.getElementById('t_address').value; 
             
-            function drawTField(label, value, yPos) {
-                t_ctx.fillStyle = "#000"; t_ctx.fillText(label, textStartX, yPos);
-                t_ctx.fillText(": " + value, textStartX + 140, yPos); 
+            function drawTDynamicField(label, value, isRed = false) {
+                t_ctx.fillStyle = "#000"; 
+                t_ctx.fillText(label, textStartX, t_currentY);
+                t_ctx.fillStyle = isRed ? "#d32f2f" : "#000";
+                t_ctx.fillText(":", textStartX + 130, t_currentY); 
+                
+                let words = value.split(' ');
+                let line = '';
+                let tempY = t_currentY;
+                let maxWidth = width - (textStartX + 150);
+                
+                for(let n = 0; n < words.length; n++) {
+                    let testLine = line + words[n] + ' ';
+                    let metrics = t_ctx.measureText(testLine);
+                    let testWidth = metrics.width;
+                    if (testWidth > maxWidth && n > 0) {
+                        t_ctx.fillText(line, textStartX + 140, tempY);
+                        line = words[n] + ' ';
+                        tempY += lineGap - 5;
+                    }
+                    else {
+                        line = testLine;
+                    }
+                }
+                t_ctx.fillText(line, textStartX + 140, tempY);
+                
+                t_currentY = tempY + lineGap;
             }
 
-            drawTField("নাম", t_name, textStartY);
-            drawTField("পদবি", t_designation, textStartY + lineGap);
-            
-            const bloodY = textStartY + lineGap * 2;
-            t_ctx.fillStyle = "#000"; t_ctx.fillText("রক্তের গ্রুপ", textStartX, bloodY);
-            t_ctx.fillStyle = "#d32f2f"; t_ctx.fillText(": " + t_bloodGroup, textStartX + 140, bloodY);
-
-            const mobileY = textStartY + lineGap * 3;
-            t_ctx.fillStyle = "#000"; t_ctx.fillText("মোবাইল", textStartX, mobileY);
-            t_ctx.fillStyle = "#d32f2f"; t_ctx.fillText(": " + t_mobile, textStartX + 140, mobileY);
-
-            // ঠিকানা (র‍্যাপ করার লজিক সহ)
-            const addressY = textStartY + lineGap * 4;
-            t_ctx.fillStyle = "#000"; t_ctx.fillText("ঠিকানা", textStartX, addressY);
-            t_ctx.fillText(":", textStartX + 130, addressY);
-            
-            // টেক্সট র‍্যাপ কল করা হচ্ছে
-            wrapText(t_ctx, t_address, textStartX + 140, addressY, width - (textStartX + 150), lineGap - 5);
+            drawTDynamicField("নাম", t_name);
+            drawTDynamicField("পদবি", t_designation);
+            drawTDynamicField("রক্তের গ্রুপ", t_bloodGroup, true);
+            drawTDynamicField("মোবাইল", t_mobile, true);
+            drawTDynamicField("ঠিকানা", t_address);
 
             const footerY = height - 150;
             const signCenterX = width - 520;
@@ -1358,5 +1373,3 @@
     </script>
 </body>
 </html>
-
-
