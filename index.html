@@ -835,17 +835,17 @@
             ctx.fillText(":", textStartX + 130, currentY);
             
             let classGroup = [];
-            // নার্সারি, ১ম বা ২য় সিলেক্ট করলে এই গ্রুপ দেখাবে
-            if (stdClass === "নার্সারি" || stdClass === "১ম" || stdClass === "২য়") {
-                classGroup = ["নার্সারি", "১ম", "২য়", "৩য়"];
-            } 
-            // ৩য়, ৪র্থ বা ৫ম সিলেক্ট করলে এই গ্রুপ দেখাবে
-            else if (stdClass === "৩য়" || stdClass === "৪র্থ" || stdClass === "৫ম") {
-                classGroup = ["৩য়", "৪র্থ", "৫ম"];
-            } 
-            // অন্য কিছু লিখলে শুধু সেটাই বক্স সহ দেখাবে
-            else if (stdClass !== "") {
-                classGroup = [stdClass]; 
+            const allClasses = ["নার্সারি", "১ম", "২য়", "৩য়", "৪র্থ", "৫ম"];
+            
+            if (stdClass !== "") {
+                const classIndex = allClasses.indexOf(stdClass);
+                if (classIndex !== -1) {
+                    // যেই ক্লাস সিলেক্ট করা হবে, সেখান থেকে শুরু করে পরবর্তী ক্লাসগুলো দেখাবে (সর্বোচ্চ ৪টি বক্স)
+                    classGroup = allClasses.slice(classIndex, classIndex + 4);
+                } else {
+                    // লিস্টের বাইরে কিছু লিখলে শুধু সেটাই বক্স সহ দেখাবে
+                    classGroup = [stdClass];
+                }
             }
 
             ctx.save();
