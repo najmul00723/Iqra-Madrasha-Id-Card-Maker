@@ -827,8 +827,51 @@
 
             drawDynamicField("নাম", name);
             drawDynamicField("পিতার নাম", fatherName);
-            drawDynamicField("রোল নং", idNo);
-            drawDynamicField("শ্রেণি", stdClass); 
+           drawDynamicField("রোল নং", idNo);
+            
+            // --- শ্রেণি কাস্টম ড্রয়িং (ফাঁকা চেকবক্স সহ) শুরু ---
+            ctx.fillStyle = "#000"; 
+            ctx.fillText("শ্রেণি", textStartX, currentY);
+            ctx.fillText(":", textStartX + 130, currentY);
+            
+            let classGroup = [];
+            // নার্সারি, ১ম বা ২য় সিলেক্ট করলে এই গ্রুপ দেখাবে
+            if (stdClass === "নার্সারি" || stdClass === "১ম" || stdClass === "২য়") {
+                classGroup = ["নার্সারি", "১ম", "২য়", "৩য়"];
+            } 
+            // ৩য়, ৪র্থ বা ৫ম সিলেক্ট করলে এই গ্রুপ দেখাবে
+            else if (stdClass === "৩য়" || stdClass === "৪র্থ" || stdClass === "৫ম") {
+                classGroup = ["৩য়", "৪র্থ", "৫ম"];
+            } 
+            // অন্য কিছু লিখলে শুধু সেটাই বক্স সহ দেখাবে
+            else if (stdClass !== "") {
+                classGroup = [stdClass]; 
+            }
+
+            ctx.save();
+            ctx.font = "bold 20px 'Tiro Bangla'"; // সব একসাথে ধরানোর জন্য ফন্ট সাইজ একটু কমানো হলো
+            let boxX = textStartX + 140;
+            const boxSize = 14;
+            const boxYOffset = -12; 
+
+            for (let i = 0; i < classGroup.length; i++) {
+                // ফাঁকা চারকোনা বক্স আঁকা (টিক মার্ক ছাড়া)
+                ctx.lineWidth = 1.5;
+                ctx.strokeStyle = "#000";
+                ctx.strokeRect(boxX, currentY + boxYOffset, boxSize, boxSize);
+                
+                // ক্লাসের নাম লেখা
+                ctx.fillStyle = "#000";
+                ctx.fillText(classGroup[i], boxX + boxSize + 4, currentY);
+                
+                // পরের বক্সের জন্য স্পেস তৈরি করা
+                let textWidth = ctx.measureText(classGroup[i]).width;
+                boxX += boxSize + 4 + textWidth + 10; 
+            }
+            ctx.restore();
+            currentY += lineGap;
+            // --- শ্রেণি কাস্টম ড্রয়িং শেষ ---
+
             drawDynamicField("বিভাগ", className);
             drawDynamicField("রক্তের গ্রুপ", bloodGroup, true);
             drawDynamicField("মোবাইল", mobile, true);
