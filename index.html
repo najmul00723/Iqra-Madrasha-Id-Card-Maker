@@ -225,7 +225,13 @@
             </div>
 
             <div class="form-group">
-                <label>রোল নং</label>
+                <label style="display: flex; justify-content: space-between; align-items: center;">
+                    রোল নং
+                    <span style="display: flex; align-items: center; gap: 5px; font-size: 13px; font-weight: normal; cursor: pointer;">
+                        <input type="checkbox" id="showIdNo" checked onchange="drawCard()" style="width: auto; padding: 0; margin: 0; cursor: pointer;"> 
+                        কার্ডে দেখান
+                    </span>
+                </label>
                 <input type="text" id="idNo" placeholder="রোল নং লিখুন" value="" oninput="drawCard()">
             </div>
 
@@ -827,7 +833,11 @@
 
             drawDynamicField("নাম", name);
             drawDynamicField("পিতার নাম", fatherName);
-           drawDynamicField("রোল নং", idNo);
+            
+            // চেকবক্স চেক করা থাকলে তবেই ইমেজে রোল নং ড্র করবে
+            if (document.getElementById('showIdNo').checked) {
+                drawDynamicField("রোল নং", idNo);
+            }
             
             // --- শ্রেণি কাস্টম ড্রয়িং (ফাঁকা চেকবক্স সহ) শুরু ---
             ctx.fillStyle = "#000"; 
