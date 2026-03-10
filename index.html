@@ -215,6 +215,11 @@
             </div>
 
             <div class="form-group">
+                <label>ছবি ঘোরান (Rotate)</label>
+                <input type="range" id="rotateSlider" min="0" max="360" step="1" value="0" oninput="updateRotation(this.value)" style="width: 100%;">
+            </div>
+
+            <div class="form-group">
                 <label>শিক্ষার্থীর নাম</label>
                 <input type="text" id="name" placeholder="নাম লিখুন" value="" oninput="drawCard()">
             </div>
@@ -335,6 +340,11 @@
             </div>
 
             <div class="form-group">
+                <label>ছবি ঘোরান (Rotate)</label>
+                <input type="range" id="t_rotateSlider" min="0" max="360" step="1" value="0" oninput="t_updateRotation(this.value)" style="width: 100%;">
+            </div>
+
+            <div class="form-group">
                 <label>শিক্ষকের নাম</label>
                 <input type="text" id="t_name" placeholder="নাম লিখুন" value="" oninput="drawTeacherCard()">
             </div>
@@ -415,6 +425,7 @@
         let imgOffsetX = 0;
         let imgOffsetY = 0;
         let imgScale = 1; 
+        let imgRotation = 0;
         let isDragging = false;
         let startX, startY;
 
@@ -422,6 +433,7 @@
         let t_imgOffsetX = 0;
         let t_imgOffsetY = 0;
         let t_imgScale = 1; 
+        let t_imgRotation = 0;
         let t_isDragging = false;
         let t_startX, t_startY;
         let t_userUploadedImg = null;
@@ -450,6 +462,10 @@
         // জুম আপডেট ফাংশন
         function updateZoom(val) { imgScale = val; drawCard(); }
         function t_updateZoom(val) { t_imgScale = val; drawTeacherCard(); }
+
+        // রোটেট আপডেট ফাংশন
+        function updateRotation(val) { imgRotation = val; drawCard(); }
+        function t_updateRotation(val) { t_imgRotation = val; drawTeacherCard(); }
 
         // শিক্ষার্থী মাউস ও টাচ ইভেন্ট লিসেনার 
         canvas.addEventListener('mousedown', startDrag);
@@ -562,8 +578,9 @@
             reader.onload = function(){
                 userUploadedImg = new Image();
                 userUploadedImg.onload = function() {
-                    imgOffsetX = 0; imgOffsetY = 0; imgScale = 1; 
+                    imgOffsetX = 0; imgOffsetY = 0; imgScale = 1; imgRotation = 0;
                     document.getElementById('zoomSlider').value = 1; 
+                    document.getElementById('rotateSlider').value = 0;
                     drawCard();
                 }
                 userUploadedImg.src = reader.result;
@@ -579,8 +596,9 @@
             reader.onload = function(){
                 t_userUploadedImg = new Image();
                 t_userUploadedImg.onload = function() {
-                    t_imgOffsetX = 0; t_imgOffsetY = 0; t_imgScale = 1; 
+                    t_imgOffsetX = 0; t_imgOffsetY = 0; t_imgScale = 1; t_imgRotation = 0;
                     document.getElementById('t_zoomSlider').value = 1; 
+                    document.getElementById('t_rotateSlider').value = 0;
                     drawTeacherCard();
                 }
                 t_userUploadedImg.src = reader.result;
@@ -770,7 +788,12 @@
                 // ছবির সেন্টার পয়েন্ট বের করে ড্র করা
                 const centerX = photoX + photoW/2;
                 const centerY = photoY + photoH/2;
-                ctx.drawImage(userUploadedImg, (centerX - imgDrawW/2) + imgOffsetX, (centerY - imgDrawH/2) + imgOffsetY, imgDrawW, imgDrawH);
+                
+                ctx.save();
+                ctx.translate(centerX + imgOffsetX, centerY + imgOffsetY);
+                ctx.rotate((imgRotation * Math.PI) / 180);
+                ctx.drawImage(userUploadedImg, -imgDrawW/2, -imgDrawH/2, imgDrawW, imgDrawH);
+                ctx.restore();
             } else {
                 ctx.fillStyle = "#eee";
                 ctx.fillRect(photoX, photoY, photoW, photoH);
@@ -1225,7 +1248,12 @@
                 }
 
                 const centerX = photoX + photoW/2; const centerY = photoY + photoH/2;
-                t_ctx.drawImage(t_userUploadedImg, (centerX - imgDrawW/2) + t_imgOffsetX, (centerY - imgDrawH/2) + t_imgOffsetY, imgDrawW, imgDrawH);
+                
+                t_ctx.save();
+                t_ctx.translate(centerX + t_imgOffsetX, centerY + t_imgOffsetY);
+                t_ctx.rotate((t_imgRotation * Math.PI) / 180);
+                t_ctx.drawImage(t_userUploadedImg, -imgDrawW/2, -imgDrawH/2, imgDrawW, imgDrawH);
+                t_ctx.restore();
             } else {
                 t_ctx.fillStyle = "#eee"; t_ctx.fillRect(photoX, photoY, photoW, photoH);
                 t_ctx.fillStyle = "#999"; t_ctx.font = "30px 'Tiro Bangla'"; t_ctx.textAlign = "center";
